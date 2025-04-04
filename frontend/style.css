@@ -1,0 +1,81 @@
+/* background */
+
+body {
+  font-family: "Arial", sans-serif;
+  background-color: #f9f9f9;
+}
+
+/* navigation bar */
+.navbar {
+  background-color: #333;
+}
+
+.navbar-brand,
+.nav-link {
+  color: white !important;
+}
+
+.hero-section {
+  background: linear-gradient(135deg, #4facfe, #00f2f3);
+  color: white;
+  padding: 100px 0;
+  text-align: center;
+}
+
+.hero-section h1 {
+  font-size: 3.5rem;
+  font-weight: bold;
+}
+
+.hero-section p {
+  font-size: 1.2rem;
+}
+
+/* blog card */
+.blog-card img {
+  width: 100%;
+  height: 200px;
+  /* adjust for good */
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.blog-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* call to action */
+.cta-section {
+  background: #333;
+  color: white;
+  text-align: center;
+  padding: 60px 0;
+}
+
+.cta-section h2 {
+  color: white;
+}
+
+.btn-write-now {
+  background-color: #00f2fe;
+  color: 333;
+  font-weight: bold;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  transition: all 0.3s;
+}
+
+.btn-write-now:hover {
+  background-color: #4facfe;
+  color: white;
+}
+
+/* footer */
+footer {
+  background-color: #222;
+  color: white;
+  padding: 30px 0;
+  text-align: center;
+}
