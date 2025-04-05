@@ -1,0 +1,61 @@
+/* body */
+body {
+  background-color: #f9f9f9;
+  font-family: "Arial", sans-serif;
+}
+
+/* navigation bar */
+.navbar {
+  background-color: #333;
+}
+
+.navbar-brand,
+.nav-link {
+  color: white !important;
+}
+
+/* hero section */
+.hero-section {
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+  color: white;
+  padding: 80px;
+  text-align: center;
+}
+
+.hero-section h1 {
+  font-size: 3rem;
+  font-weight: bold;
+}
+
+.hero-section p {
+  font-size: 1.2rem;
+}
+
+/* form style */
+.write-form {
+  background: white;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  border-radius: 12px;
+}
+
+.btn-submit {
+  background: #00f2fe;
+  color: #333;
+  font-weight: bold;
+  border-radius: 8px;
+  transition: all 0.3s;
+}
+
+.btn-submit:hover {
+  background: #4facfe;
+  color: White;
+}
+
+/* footer */
+footer {
+  background-color: #222;
+  color: white;
+  padding: 30px;
+  text-align: center;
+}
