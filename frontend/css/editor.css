@@ -1,0 +1,42 @@
+/* body */
+body {
+  font-family: "Arial", sans-serif;
+  background-color: #f9f9f9;
+}
+
+/* navigation bar */
+.navbar {
+  background-color: #333;
+}
+
+.navbar-brand,
+.nav-link {
+  color: white !important;
+}
+
+.hero-section {
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+  color: white;
+  padding: 100px 0;
+  text-align: center;
+}
+
+.hero-section h1 {
+  font-size: 3.5rem;
+  font-weight: bold;
+}
+
+.hero-section p {
+  font-size: 1.2rem;
+}
+
+.editor-container {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.ql-editor {
+  min-height: 300px;
+}
