@@ -1,0 +1,51 @@
+body {
+  font-family: "Arial", sans-serif;
+  background-color: #f9f9f9;
+}
+
+.navbar {
+  background-color: #333;
+}
+
+.navbar-brand,
+.nav-link {
+  color: white !important;
+}
+
+.settings-section {
+  padding: 60px 0;
+}
+
+.settings-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.05);
+  padding: 30px;
+  margin-bottom: 30px;
+}
+
+.form-label {
+  font-weight: bold;
+}
+
+.btn-save {
+  background-color: #00f2fe;
+  color: #333;
+  font-weight: bold;
+}
+
+.btn-save:hover {
+  background-color: #4facfe;
+  color: white;
+}
+
+.btn-danger {
+  border-radius: 8px;
+}
+
+footer {
+  background-color: #222;
+  color: white;
+  padding: 30px 0;
+  text-align: center;
+}
