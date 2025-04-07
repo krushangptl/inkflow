@@ -44,3 +44,7 @@ pip install sqlalchemy
 pip install pydantic
 ```
 
+- alembic
+```
+pip install alembic
+```
