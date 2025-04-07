@@ -1,9 +1,11 @@
+const BASVE_URL = "http://127.0.0.1:8000";
+
+// Toggle Form Logic
 const loginForm = document.getElementById("loginForm");
 const registerForm = document.getElementById("registerForm");
 const toggleFormBtn = document.getElementById("toggleForm");
 const formTitle = document.getElementById("formTitle");
 
-// toggle functionality
 toggleFormBtn.addEventListener("click", () => {
   if (loginForm.style.display === "none") {
     loginForm.style.display = "block";
@@ -18,35 +20,51 @@ toggleFormBtn.addEventListener("click", () => {
   }
 });
 
-// handle login
-loginForm.addEventListener("submit", async (event) => {
-  event.preventDefault();
-  let email = document.getElementById("loginEmail").value;
-  let password = document.getElementById("loginPassword").value;
+// 🔐 Register
+document
+  .getElementById("registerForm")
+  .addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-  let response = await fetch("api/login", {
+    const username = document.getElementById("registerUsername").value;
+    const email = document.getElementById("registerEmail").value;
+    const password = document.getElementById("registerPassword").value;
+
+    const response = await fetch(`${BASE_URL}/api/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, email, password }),
+    });
+
+    const result = await response.json();
+    if (response.ok) {
+      alert("Registration successful ✅");
+      window.location.href = "index.html"; // Redirect to homepage
+    } else {
+      alert(result.detail || "Registration failed");
+    }
+  });
+
+// 🔐 Login
+document.getElementById("loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const email = document.getElementById("loginEmail").value;
+  const password = document.getElementById("loginPassword").value;
+
+  const response = await fetch(`${BASE_URL}/api/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
   });
 
-  let result = await response.json();
-  alert(result.message);
-});
+  const result = await response.json();
 
-// handle registration
-registerForm.addEventListener("submit", async (event) => {
-  event.preventDefault();
-  let username = document.getElementById("registerUsername").value;
-  let email = document.getElementById("registerEmail").value;
-  let password = document.getElementById("registerPassword").value;
-
-  let response = await fetch("/api/register", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, email, password }),
-  });
-
-  let result = await response.json();
-  alert(result.message);
+  if (response.ok) {
+    alert("Login successful 🎉");
+    localStorage.setItem("user", JSON.stringify(result.user));
+    window.location.href = "index.html"; // Redirect to homepage
+  } else {
+    alert(result.detail || "Login failed");
+  }
 });

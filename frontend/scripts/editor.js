@@ -42,3 +42,8 @@ publishBtn.addEventListener("click", publishBlog);
 document.querySelector("#darkModeToggle").addEventListener("click", () => {
   document.body.classList.toggle("dark-mode");
 });
+
+const token = localStorage.getItem("token");
+if (!token) {
+  window.location.href = "login.html";
+}
