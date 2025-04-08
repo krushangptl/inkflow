@@ -61,4 +61,4 @@ def login_user(data: dict, db: Session = Depends(get_db)):
     if not user or not pwd_context.verify(password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
-    return {"message": "Login successful 🎉", "user": {"username": user.username, "email": user.email}}
+    return {"message": "Login successful", "user": {"username": user.username, "email": user.email}}
