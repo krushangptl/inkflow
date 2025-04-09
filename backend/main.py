@@ -35,7 +35,7 @@ def get_db():
 
 @app.get("/")
 def read_root():
-    return {"message": "InkFlow API is running 🚀"}
+    return {"message": "InkFlow API is running"}
 
 @app.post("/api/register")
 def register_user(data: dict, db: Session = Depends(get_db)):
