@@ -1,33 +1,59 @@
-// initialize quill editor
+// Navigation bar logic
+const user = JSON.parse(localStorage.getItem("user"));
+const navLinks = document.getElementById("navLinks");
+const ctaWriter = document.getElementById("ctaWriter");
+
+if (user) {
+  navLinks.innerHTML = `
+        <li class="nav-item"><a class="nav-link" href="/frontend/index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="/frontend/html/article.html">Articles</a></li>
+        <li class="nav-item"><a class="nav-link" href="/frontend/html/contact.html">Contact</a></li>
+        <li class="nav-item"><a class="nav-link" href="/frontend/html/editor.html">Editor</a></li>
+        <li class="nav-item"><a class="nav-link" href="/frontend/html/account.html">Account</a></li>
+      `;
+  if (ctaWriter) ctaWriter.style.display = "block";
+} else {
+  navLinks.innerHTML = `
+        <li class="nav-item"><a class="nav-link" href="/frontend/index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="/frontend/html/article.html">Articles</a></li>
+        <li class="nav-item"><a class="nav-link" href="/frontend/html/contact.html">Contact</a></li>
+        <li class="nav-item"><a class="nav-link" href="/frontend/html/login.html">Login</a></li>
+      `;
+  if (ctaWriter) ctaWriter.style.display = "none";
+}
+
+// Initialize Quill
 let quill = new Quill("#editor", { theme: "snow" });
-const editor = document.querySelector("#editor .ql-editor");
 const status = document.querySelector("#status");
 const wordCount = document.querySelector("#wordCount");
 const publishBtn = document.querySelector("#publishBtn");
 
-// load saved content from LocalStorage
+// Load saved draft
 const savedContent = localStorage.getItem("blogContent");
 if (savedContent) {
   quill.root.innerHTML = savedContent;
   updateWordCount();
 }
 
-// autosave feature
+// Auto-save
 function saveDraft() {
   localStorage.setItem("blogContent", quill.root.innerHTML);
-  status.innerText = "Draft saved!";
-  setTimeout(() => (status.innerText = ""), 2000);
+  if (status) {
+    status.innerText = "Draft saved!";
+    setTimeout(() => (status.innerText = ""), 2000);
+  }
 }
-setInterval(saveDraft, 5000); // auto-save every 5 seconds
+setInterval(saveDraft, 5000);
 
-// word count feature
+// Word count
 function updateWordCount() {
   const text = quill.getText().trim();
-  wordCount.innerText = `Word Count: ${text.split(/\s+/).length - 1}`;
+  const count = text.length > 0 ? text.split(/\s+/).length : 0;
+  if (wordCount) wordCount.innerText = `Word Count: ${count}`;
 }
 quill.on("text-change", updateWordCount);
 
-// publish validation
+// Publish
 function publishBlog() {
   if (!quill.getText().trim()) {
     alert("Blog content cannot be empty!");
@@ -35,15 +61,17 @@ function publishBlog() {
   }
   console.log("Blog Published:", quill.root.innerHTML);
   alert("Blog Published Successfully!");
+  localStorage.removeItem("blogContent");
 }
-publishBtn.addEventListener("click", publishBlog);
 
-// dark mode toggle
-document.querySelector("#darkModeToggle").addEventListener("click", () => {
-  document.body.classList.toggle("dark-mode");
-});
+if (publishBtn) {
+  publishBtn.addEventListener("click", publishBlog);
+}
 
-const token = localStorage.getItem("token");
-if (!token) {
-  window.location.href = "login.html";
+// Dark mode
+const darkToggle = document.querySelector("#darkModeToggle");
+if (darkToggle) {
+  darkToggle.addEventListener("click", () => {
+    document.body.classList.toggle("dark-mode");
+  });
 }

@@ -67,3 +67,6 @@ registerForm.addEventListener("submit", async (e) => {
     alert(data.detail);
   }
 });
+
+// after successful login
+localStorage.setItem("user", JSON.stringify(data.user));
