@@ -19,3 +19,29 @@ if (user) {
       `;
   ctaWriter.style.display = "none";
 }
+
+// Fetch blogs and render them dynamically on index.html
+fetch("http://localhost:8000/blogs/")
+  .then((response) => response.json())
+  .then((data) => {
+    const blogContainer = document.querySelector("#blog-posts");
+    data.forEach((blog) => {
+      const blogCard = `
+        <div class="col-md-4 mb-4">
+          <div class="card blog-card">
+            <img src="${blog.image}" class="card-img-top" alt="${blog.title}" />
+            <div class="card-body">
+              <h5 class="card-title">${blog.title}</h5>
+              <p class="card-text">${blog.content.substring(0, 100)}...</p>
+              <!-- Ensure the correct blog ID is used in the href -->
+              <a href="/frontend/html/blog.html?id=${blog.id}" class="btn btn-primary">Read More</a>
+            </div>
+          </div>
+        </div>
+      `;
+      blogContainer.innerHTML += blogCard;
+    });
+  })
+  .catch((error) => {
+    console.error("Error fetching blogs:", error);
+  });

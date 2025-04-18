@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>inkFlow - Blog</title>
+    <link href="/frontend/assets/bootstrap.min.css" rel="stylesheet" />
+    <link href="/frontend/css/article.css" rel="stylesheet" />
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">inkFlow</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto" id="navLinks"></ul>
+            </div>
+        </div>
+    </nav>
+
+    <section class="container py-5" id="blogContent">
+        <!-- blog content will load here -->
+    </section>
+
+    <footer>
+        <p>© 2025 inkFlow Blog. All rights reserved.</p>
+    </footer>
+
+    <script src="/frontend/assets/bootstrap.bundle.min.js"></script>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const blogId = params.get("id");
+        const blogContent = document.getElementById("blogContent");
+
+        fetch(`http://localhost:8000/blogs/${blogId}`)
+            .then((res) => res.json())
+            .then((data) => {
+                blogContent.innerHTML = `
+          <h2 class="text-center mb-4">${data.title}</h2>
+          <img src="${data.image}" class="img-fluid mb-4" />
+          ${data.content}
+        `;
+            })
+            .catch(() => {
+                blogContent.innerHTML = "<p>Blog not found.</p>";
+            });
+    </script>
+</body>
+
+</html>
