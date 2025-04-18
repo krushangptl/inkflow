@@ -23,55 +23,30 @@ if (user) {
 }
 
 // Initialize Quill
-let quill = new Quill("#editor", { theme: "snow" });
-const status = document.querySelector("#status");
-const wordCount = document.querySelector("#wordCount");
-const publishBtn = document.querySelector("#publishBtn");
+let quill = new Quill("#editor", {
+  theme: "snow",
+});
 
-// Load saved draft
-const savedContent = localStorage.getItem("blogContent");
-if (savedContent) {
-  quill.root.innerHTML = savedContent;
-  updateWordCount();
-}
+async function submitBlog() {
+  const title = document.getElementById("blogTitle").value;
+  const content = quill.root.innerHTML;
 
-// Auto-save
-function saveDraft() {
-  localStorage.setItem("blogContent", quill.root.innerHTML);
-  if (status) {
-    status.innerText = "Draft saved!";
-    setTimeout(() => (status.innerText = ""), 2000);
-  }
-}
-setInterval(saveDraft, 5000);
-
-// Word count
-function updateWordCount() {
-  const text = quill.getText().trim();
-  const count = text.length > 0 ? text.split(/\s+/).length : 0;
-  if (wordCount) wordCount.innerText = `Word Count: ${count}`;
-}
-quill.on("text-change", updateWordCount);
-
-// Publish
-function publishBlog() {
-  if (!quill.getText().trim()) {
-    alert("Blog content cannot be empty!");
+  if (!title || !content) {
+    alert("Please fill in both title and content.");
     return;
   }
-  console.log("Blog Published:", quill.root.innerHTML);
-  alert("Blog Published Successfully!");
-  localStorage.removeItem("blogContent");
-}
 
-if (publishBtn) {
-  publishBtn.addEventListener("click", publishBlog);
-}
-
-// Dark mode
-const darkToggle = document.querySelector("#darkModeToggle");
-if (darkToggle) {
-  darkToggle.addEventListener("click", () => {
-    document.body.classList.toggle("dark-mode");
+  const response = await fetch("http://localhost:8000/blogs", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ title, content }),
   });
+
+  const data = await response.json();
+  if (response.ok) {
+    alert("Blog posted!");
+    window.location.href = "/frontend/html/article.html";
+  } else {
+    alert(data.detail || "Failed to post blog.");
+  }
 }

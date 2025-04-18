@@ -14,7 +14,7 @@
         <div class="container">
             <a class="navbar-brand" href="index.html">inkFlow</a>
             <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ms-auto" id="navLinks"></ul>
+                <ul class="navbar-nav ms-auto" id="navLinks"></ul> <!-- Ensure this exists -->
             </div>
         </div>
     </nav>
@@ -28,23 +28,7 @@
     </footer>
 
     <script src="/frontend/assets/bootstrap.bundle.min.js"></script>
-    <script>
-        const params = new URLSearchParams(window.location.search);
-        const blogId = params.get("id");
-        const blogContent = document.getElementById("blogContent");
-
-        fetch(`http://localhost:8000/blogs/${blogId}`)
-            .then((res) => res.json())
-            .then((data) => {
-                blogContent.innerHTML = `
-          <h2 class="text-center mb-4">${data.title}</h2>
-          <img src="${data.image}" class="img-fluid mb-4" />
-          ${data.content}
-        `;
-            })
-            .catch(() => {
-                blogContent.innerHTML = "<p>Blog not found.</p>";
-            });
+    <script src="/frontend/scripts/blog.js">
     </script>
 </body>
 

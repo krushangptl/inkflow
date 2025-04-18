@@ -1,46 +1,43 @@
-// /frontend/scripts/blog.js
-const blogContainer = document.getElementById("blogContent");
-const params = new URLSearchParams(window.location.search);
-const blogId = params.get("id");
-
-// Simulate fetching data from a database (you can replace with fetch to your backend)
-fetch("/frontend/data/blogs.json")
-  .then((res) => res.json())
-  .then((blogs) => {
-    const blog = blogs.find((b) => b.id == blogId);
-    if (!blog) {
-      blogContainer.innerHTML = `<h3>Blog not found</h3>`;
-      return;
-    }
-
-    blogContainer.innerHTML = `
-      <div class="text-center mb-4">
-        <img src="${blog.image}" alt="${blog.title}" class="img-fluid mb-4 rounded" style="max-height: 400px;">
-        <h2>${blog.title}</h2>
-        <p class="mt-3 text-muted">${blog.summary}</p>
-      </div>
-      <div>
-        <p style="white-space: pre-line;">${blog.content}</p>
-      </div>
-    `;
-  });
-
-// Load nav links
-const user = JSON.parse(localStorage.getItem("user"));
+// Insert the navigation bar depending on login status
 const navLinks = document.getElementById("navLinks");
+const user = JSON.parse(localStorage.getItem("user"));
+
 if (user) {
   navLinks.innerHTML = `
-    <li class="nav-item"><a class="nav-link" href="/frontend/index.html">Home</a></li>
-    <li class="nav-item"><a class="nav-link" href="/frontend/html/article.html">Articles</a></li>
-    <li class="nav-item"><a class="nav-link" href="/frontend/html/contact.html">Contact</a></li>
-    <li class="nav-item"><a class="nav-link" href="/frontend/html/editor.html">Editor</a></li>
-    <li class="nav-item"><a class="nav-link" href="/frontend/html/account.html">Account</a></li>
-  `;
+                <li class="nav-item"><a class="nav-link" href="/frontend/index.html">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="/frontend/html/article.html">Articles</a></li>
+                <li class="nav-item"><a class="nav-link" href="/frontend/html/contact.html">Contact</a></li>
+                <li class="nav-item"><a class="nav-link" href="/frontend/html/editor.html">Editor</a></li>
+                <li class="nav-item"><a class="nav-link" href="/frontend/html/account.html">Account</a></li>
+            `;
 } else {
   navLinks.innerHTML = `
-    <li class="nav-item"><a class="nav-link" href="/frontend/index.html">Home</a></li>
-    <li class="nav-item"><a class="nav-link" href="/frontend/html/article.html">Articles</a></li>
-    <li class="nav-item"><a class="nav-link" href="/frontend/html/contact.html">Contact</a></li>
-    <li class="nav-item"><a class="nav-link" href="/frontend/html/login.html">Login</a></li>
-  `;
+                <li class="nav-item"><a class="nav-link" href="/frontend/index.html">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="/frontend/html/article.html">Articles</a></li>
+                <li class="nav-item"><a class="nav-link" href="/frontend/html/contact.html">Contact</a></li>
+                <li class="nav-item"><a class="nav-link" href="/frontend/html/login.html">Login</a></li>
+            `;
 }
+
+// Fetch the blog content by ID from the URL
+const params = new URLSearchParams(window.location.search);
+const blogId = params.get("id");
+const blogContent = document.getElementById("blogContent");
+
+fetch(`http://localhost:8000/blogs/${blogId}`)
+  .then((res) => res.json())
+  .then((data) => {
+    if (data) {
+      // Removed the image part
+      blogContent.innerHTML = `
+                        <h2 class="text-center mb-4">${data.title}</h2>
+                        <div>${data.content}</div>
+                    `;
+    } else {
+      blogContent.innerHTML = "<p>Blog not found.</p>";
+    }
+  })
+  .catch((err) => {
+    console.error("Error loading blog:", err);
+    blogContent.innerHTML = "<p>Blog not found or failed to load.</p>";
+  });

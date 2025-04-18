@@ -1,28 +1,27 @@
 from fastapi import FastAPI, HTTPException, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel
+from typing import List
 import sqlite3
 import hashlib
 import os
 import shutil
-from typing import Optional
+
+from models import UserRegister, UserLogin, UserUpdate, PasswordUpdate, BlogCreate
 
 app = FastAPI()
 
-# CORS for frontend access
+# Allow frontend to access
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Replace with frontend origin in production
+    allow_origins=["*"],  # For production: replace with frontend URL
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Directory for uploaded images
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
-
 DATABASE = "users.db"
 
 def get_db():
@@ -30,28 +29,10 @@ def get_db():
     conn.row_factory = sqlite3.Row
     return conn
 
-# ---------- MODELS ----------
-class UserRegister(BaseModel):
-    username: str
-    email: str
-    password: str
-
-class UserLogin(BaseModel):
-    email: str
-    password: str
-
-class UserUpdate(BaseModel):
-    name: str
-    username: str
-    email: str
-    bio: str
-
-class PasswordUpdate(BaseModel):
-    current_password: str
-    new_password: str
-
-# ---------- INIT DB ----------
+# ---------- INITIALIZE TABLES ----------
 db = get_db()
+
+# User Table
 db.execute("""
 CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -63,18 +44,24 @@ CREATE TABLE IF NOT EXISTS users (
     profile_picture TEXT DEFAULT ''
 )
 """)
-# Add column if it doesn't exist (safe migration)
-try:
-    db.execute("ALTER TABLE users ADD COLUMN profile_picture TEXT DEFAULT ''")
-    db.commit()
-except sqlite3.OperationalError:
-    pass
 
-# ---------- HELPERS ----------
+# Blog Table
+db.execute("""
+CREATE TABLE IF NOT EXISTS blogs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    content TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)
+""")
+
+db.commit()
+
+# ---------- UTILS ----------
 def hash_password(password: str) -> str:
     return hashlib.sha256(password.encode()).hexdigest()
 
-# ---------- AUTH ROUTES ----------
+# ---------- AUTH ----------
 @app.post("/register")
 def register(user: UserRegister):
     hashed_pw = hash_password(user.password)
@@ -85,16 +72,16 @@ def register(user: UserRegister):
             (user.username, user.email, hashed_pw)
         )
         db.commit()
-        return {"message": "User registered successfully"}
+        return {"message": "User registered"}
     except sqlite3.IntegrityError:
-        raise HTTPException(status_code=400, detail="Email already registered")
+        raise HTTPException(status_code=400, detail="Email already exists")
 
 @app.post("/login")
 def login(user: UserLogin):
     hashed_pw = hash_password(user.password)
     db = get_db()
     result = db.execute(
-        "SELECT * FROM users WHERE email=? AND password=?",
+        "SELECT * FROM users WHERE email = ? AND password = ?",
         (user.email, hashed_pw)
     ).fetchone()
 
@@ -110,21 +97,15 @@ def login(user: UserLogin):
                 "profile_picture": result["profile_picture"]
             }
         }
-    else:
-        raise HTTPException(status_code=401, detail="Invalid credentials")
+    raise HTTPException(status_code=401, detail="Invalid credentials")
 
-# ---------- USER ROUTES ----------
+# ---------- USER ----------
 @app.get("/user/{user_id}")
 def get_user(user_id: int):
     db = get_db()
-    user = db.execute("""
-        SELECT id, name, username, email, bio, profile_picture
-        FROM users WHERE id = ?
-    """, (user_id,)).fetchone()
-
+    user = db.execute("SELECT * FROM users WHERE id = ?", (user_id,)).fetchone()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-
     return dict(user)
 
 @app.post("/user/{user_id}/update")
@@ -139,22 +120,22 @@ def update_user(user_id: int, data: UserUpdate):
 @app.post("/user/{user_id}/password")
 def update_password(user_id: int, data: PasswordUpdate):
     db = get_db()
-    user = db.execute("SELECT password FROM users WHERE id = ?", (user_id,)).fetchone()
+    user = db.execute("SELECT password FROM users WHERE id=?", (user_id,)).fetchone()
     if not user or user["password"] != hash_password(data.current_password):
         raise HTTPException(status_code=400, detail="Current password incorrect")
 
-    db.execute("UPDATE users SET password = ? WHERE id = ?", (hash_password(data.new_password), user_id))
+    db.execute("UPDATE users SET password=? WHERE id=?", (hash_password(data.new_password), user_id))
     db.commit()
-    return {"message": "Password updated"}
+    return {"message": "Password changed"}
 
 @app.delete("/user/{user_id}/delete")
 def delete_user(user_id: int):
     db = get_db()
-    db.execute("DELETE FROM users WHERE id = ?", (user_id,))
+    db.execute("DELETE FROM users WHERE id=?", (user_id,))
     db.commit()
     return {"message": "User deleted"}
 
-# ---------- FILE UPLOAD ROUTE ----------
+# ---------- PROFILE PICTURE ----------
 @app.post("/user/{user_id}/upload-profile-picture")
 def upload_profile_picture(user_id: int, file: UploadFile = File(...)):
     ext = os.path.splitext(file.filename)[-1]
@@ -164,9 +145,42 @@ def upload_profile_picture(user_id: int, file: UploadFile = File(...)):
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
-    # Save file path to DB
     db = get_db()
-    db.execute("UPDATE users SET profile_picture = ? WHERE id = ?", (file_path, user_id))
+    db.execute("UPDATE users SET profile_picture=? WHERE id=?", (file_path, user_id))
     db.commit()
-
     return {"message": "Profile picture uploaded", "path": file_path}
+
+# ---------- BLOG ROUTES ----------
+@app.post("/blogs")
+def create_blog(blog: BlogCreate):
+    db = get_db()
+    db.execute(
+        "INSERT INTO blogs (title, content) VALUES (?, ?)",
+        (blog.title, blog.content)
+    )
+    db.commit()
+    return {"message": "Blog posted successfully"}
+
+@app.get("/blogs")
+def get_all_blogs():
+    try:
+        db = get_db()
+        blogs = db.execute("SELECT * FROM blogs ORDER BY created_at DESC").fetchall()
+        return [dict(blog) for blog in blogs]
+    except Exception as e:
+        print("Error fetching blogs:", e)
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
+@app.get("/blogs/latest")
+def get_latest_blogs():
+    db = get_db()
+    blogs = db.execute("SELECT * FROM blogs ORDER BY created_at DESC LIMIT 3").fetchall()
+    return [dict(blog) for blog in blogs]
+
+@app.get("/blogs/{blog_id}")
+def get_blog(blog_id: int):
+    db = get_db()
+    blog = db.execute("SELECT * FROM blogs WHERE id=?", (blog_id,)).fetchone()
+    if not blog:
+        raise HTTPException(status_code=404, detail="Blog not found")
+    return dict(blog)
