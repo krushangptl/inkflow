@@ -1,5 +1,3 @@
-const BASE_URL = "http://127.0.0.1:8000";
-
 // Toggle Form Logic
 const loginForm = document.getElementById("loginForm");
 const registerForm = document.getElementById("registerForm");
@@ -20,51 +18,52 @@ toggleFormBtn.addEventListener("click", () => {
   }
 });
 
-// 🔐 Register
-document
-  .getElementById("registerForm")
-  .addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const username = document.getElementById("registerUsername").value;
-    const email = document.getElementById("registerEmail").value;
-    const password = document.getElementById("registerPassword").value;
-
-    const response = await fetch(`${BASE_URL}/api/register`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, email, password }),
-    });
-
-    const result = await response.json();
-    if (response.ok) {
-      alert("Registration successful ✅");
-      window.location.href = "index.html"; // Redirect to homepage
-    } else {
-      alert(result.detail || "Registration failed");
-    }
-  });
-
-// 🔐 Login
-document.getElementById("loginForm").addEventListener("submit", async (e) => {
+loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const email = document.getElementById("loginEmail").value;
-  const password = document.getElementById("loginPassword").value;
+  const email = loginEmail.value;
+  const password = loginPassword.value;
 
-  const response = await fetch(`${BASE_URL}/api/login`, {
+  const res = await fetch("http://localhost:8000/login", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify({ email, password }),
   });
 
-  const result = await response.json();
+  const data = await res.json();
 
-  if (response.ok) {
-    alert("Login successful 🎉");
-    localStorage.setItem("user", JSON.stringify(result.user));
-    window.location.href = "index.html"; // Redirect to homepage
+  if (res.ok) {
+    localStorage.setItem("user", JSON.stringify(data.user));
+    alert("Login successful!");
+    window.location.href = "/frontend/index.html";
   } else {
-    alert(result.detail || "Login failed");
+    alert(data.detail);
+  }
+});
+
+registerForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const username = registerUsername.value;
+  const email = registerEmail.value;
+  const password = registerPassword.value;
+
+  const res = await fetch("http://localhost:8000/register", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ username, email, password }),
+  });
+
+  const data = await res.json();
+
+  if (res.ok) {
+    alert("Registered! Please log in.");
+    toggleFormBtn.click(); // switch to login form
+  } else {
+    alert(data.detail);
   }
 });
