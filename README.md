@@ -43,7 +43,6 @@ Below is an overview of the project’s file structure:
     ├── css/                  # Page-specific custom CSS styles
     │   ├── account.css       # Styling for user account page
     │   ├── article.css       # Styling for the articles list page
-    │   ├── contact.css       # Styling for the contact page
     │   ├── editor.css        # Styling for the blog editor page
     │   └── login.css         # Styling for the login page
     │
@@ -51,7 +50,6 @@ Below is an overview of the project’s file structure:
     │   ├── account.html      # Account management page
     │   ├── article.html      # Page displaying a list/grid of blog articles
     │   ├── blog.html         # Single blog view page
-    │   ├── contact.html      # Contact form or information page
     │   ├── editor.html       # Blog creation/editor page using Quill
     │   └── login.html        # Login screen for user authentication
     │
@@ -62,7 +60,6 @@ Below is an overview of the project’s file structure:
     │   ├── account.js        # Handles account page logic
     │   ├── article.js        # Fetches and displays list of blog articles
     │   ├── blog.js           # Loads a single blog post via URL query param
-    │   ├── contact.js        # Handles contact form submission (if any)
     │   ├── editor.js         # Manages blog creation with Quill and API POST
     │   └── login.js          # Manages login form, localStorage, and auth
     │
@@ -78,12 +75,10 @@ Below is an overview of the project’s file structure:
   - **JavaScript** for dynamic content and API calls.
   - **Bootstrap 5** for responsive design and layout.
   - **Quill.js** (optional) for rich text editing in the blog editor.
-  
 - **Backend:**
   - **Python** using the **FastAPI** framework for creating RESTful APIs.
   - **SQLite** as the file-based relational database to store user and blog data.
   - **Uvicorn** as the ASGI server to run the FastAPI application.
-  
 - **Other Tools:**
   - **Git** for version control.
   - **CORS Middleware** (provided by FastAPI) to enable cross-origin requests from the frontend.
@@ -133,11 +128,9 @@ The connection between the frontend and backend is handled using **AJAX/Fetch AP
 
 - **Frontend Fetch Requests:**  
   The JavaScript files (e.g., `script.js` and `article.js`) use the Fetch API to request data from endpoints such as `http://localhost:8000/blogs`.
-  
 - **CORS Middleware:**  
   The backend is configured with CORS middleware to allow requests from all origins (adjustable for production). This lets your frontend, which might be served from a different port or domain, communicate with your backend.
-  
-- **Data Flow:**  
+- **Data Flow:**
   1. When the user visits a page, the JavaScript code initiates a fetch request to a specific API endpoint.
   2. The FastAPI backend processes the request, interacts with the SQLite database, and returns JSON data.
   3. The JavaScript then parses the JSON and dynamically renders content (such as blog cards or full blog details) into the DOM.
@@ -148,13 +141,10 @@ The connection between the frontend and backend is handled using **AJAX/Fetch AP
 
 - **Route Definitions:**  
   FastAPI is used to define endpoints with decorators like `@app.post` and `@app.get`. Each endpoint corresponds to a function that handles requests.
-  
 - **Data Validation:**  
   Incoming request data is validated using Pydantic models defined in `models.py` (e.g., `UserRegister`, `BlogCreate`). This ensures only valid data is processed.
-  
 - **Error Handling:**  
   FastAPI raises `HTTPException` for error scenarios (e.g., user not found, invalid credentials) that are sent as JSON error messages to the frontend.
-  
 - **Middleware:**  
   CORS middleware is added to the FastAPI instance so that it accepts requests from the frontend irrespective of the domain.
 
@@ -180,4 +170,3 @@ inkFlow is a modern web project that seamlessly integrates a rich frontend with 
 By following the principles outlined in this README, developers can easily understand the project structure, how data flows between the frontend and backend, and how key technologies (FastAPI and SQLite) are utilized to build a scalable and maintainable web application. Whether you’re looking to expand the platform or use it as a learning tool, inkFlow serves as an excellent foundation for building modern web projects.
 
 ---
-

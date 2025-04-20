@@ -7,7 +7,6 @@ if (user) {
   navLinks.innerHTML = `
         <li class="nav-item"><a class="nav-link" href="/frontend/index.html">Home</a></li>
         <li class="nav-item"><a class="nav-link" href="/frontend/html/article.html">Articles</a></li>
-        <li class="nav-item"><a class="nav-link" href="/frontend/html/contact.html">Contact</a></li>
         <li class="nav-item"><a class="nav-link" href="/frontend/html/editor.html">Editor</a></li>
         <li class="nav-item"><a class="nav-link" href="/frontend/html/account.html">Account</a></li>
       `;
@@ -16,7 +15,6 @@ if (user) {
   navLinks.innerHTML = `
         <li class="nav-item"><a class="nav-link" href="/frontend/index.html">Home</a></li>
         <li class="nav-item"><a class="nav-link" href="/frontend/html/article.html">Articles</a></li>
-        <li class="nav-item"><a class="nav-link" href="/frontend/html/contact.html">Contact</a></li>
         <li class="nav-item"><a class="nav-link" href="/frontend/html/login.html">Login</a></li>
       `;
   if (ctaWriter) ctaWriter.style.display = "none";

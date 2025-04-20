@@ -7,7 +7,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     navLinks.innerHTML = `
       <li class="nav-item"><a class="nav-link" href="/frontend/index.html">Home</a></li>
       <li class="nav-item"><a class="nav-link" href="/frontend/html/article.html">Articles</a></li>
-      <li class="nav-item"><a class="nav-link" href="/frontend/html/contact.html">Contact</a></li>
       <li class="nav-item"><a class="nav-link" href="/frontend/html/editor.html">Editor</a></li>
       <li class="nav-item"><a class="nav-link" href="/frontend/html/account.html">Account</a></li>
     `;
@@ -15,7 +14,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     navLinks.innerHTML = `
       <li class="nav-item"><a class="nav-link" href="/frontend/index.html">Home</a></li>
       <li class="nav-item"><a class="nav-link" href="/frontend/html/article.html">Articles</a></li>
-      <li class="nav-item"><a class="nav-link" href="/frontend/html/contact.html">Contact</a></li>
       <li class="nav-item"><a class="nav-link" href="/frontend/html/login.html">Login</a></li>
     `;
   }
