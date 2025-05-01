@@ -135,21 +135,6 @@ def delete_user(user_id: int):
     db.commit()
     return {"message": "User deleted"}
 
-# ---------- PROFILE PICTURE ----------
-@app.post("/user/{user_id}/upload-profile-picture")
-def upload_profile_picture(user_id: int, file: UploadFile = File(...)):
-    ext = os.path.splitext(file.filename)[-1]
-    filename = f"user_{user_id}{ext}"
-    file_path = os.path.join(UPLOAD_DIR, filename)
-
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-
-    db = get_db()
-    db.execute("UPDATE users SET profile_picture=? WHERE id=?", (file_path, user_id))
-    db.commit()
-    return {"message": "Profile picture uploaded", "path": file_path}
-
 # ---------- BLOG ROUTES ----------
 @app.post("/blogs")
 def create_blog(blog: BlogCreate):
