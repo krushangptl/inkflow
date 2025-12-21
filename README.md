@@ -1,4 +1,4 @@
-# inkFlow
+# inkFlow | Blog Website
 
 inkFlow is a lightweight web project that combines a modern frontend with a Python FastAPI backend and an SQLite database for managing user accounts and blog posts. The platform is designed for tech enthusiasts and writers to share and discover insightful articles, with an easy-to-use editor and dynamic content display.
 
